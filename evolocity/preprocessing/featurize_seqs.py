@@ -7,7 +7,7 @@ import math
 import numpy as np
 import os
 
-def get_model(model_name):
+def get_model(model_name, filename="embeddings/test_embeddings.pt"):
     if model_name == 'esm1':
         from ..tools.fb_model import FBModel
         model = FBModel(
@@ -21,7 +21,7 @@ def get_model(model_name):
             repr_layer=[-1],
         )
     elif model_name.startswith('esm1v'):
-        from fb_model import FBModel
+        from ..tools.fb_model import FBModel
         model = FBModel(
             'esm1v_t33_650M_UR90S_{}'.format(model_name[-1]),
             repr_layer=[-1],
@@ -38,6 +38,9 @@ def get_model(model_name):
         model = TAPEModel(
             'bert-base',
         )
+    elif model_name == 'evo':
+        from ..tools.evo_model import DummyEvo
+        model = DummyEvo(filename)
     else:
         raise ValueError('Invalid model {}'.format(model_name))
 
@@ -58,6 +61,13 @@ def embed_seqs(
         )
         X_embed = np.array([
             embedded[seq][0]['embedding'].mean(0) for seq in seqs_fb
+        ])
+    elif 'evo' in model.name_:
+        from ..tools.fb_semantics import embed_seqs_evo
+        seqs_evo = sorted([ seq for seq in seqs ])
+        embedded = embed_seqs_evo(model, seqs_evo)
+        X_embed = np.array([
+            embedded[seq][0]['embedding'].mean(0) for seq in seqs_evo
         ])
     else:
         raise ValueError('Model {} not supported for sequence embedding'

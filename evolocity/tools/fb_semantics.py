@@ -39,7 +39,10 @@ def predict_sequence_prob_fb(
         if len(output) > 1 and i < len(output) - 1:
             output[i] = output[i][:-1]
 
-    return np.vstack(output)
+    out = np.vstack(output)
+    print("Sequence Length:", len(seq))
+    print("Shape of sequence prob output:", out.shape)
+    return out
 
 def embed_seqs_fb(
         model, seqs, repr_layers, alphabet,
@@ -102,4 +105,32 @@ def embed_seqs_fb(
         embedding = np.vstack(embeddings)
         embedded_seqs[seq] = [ { 'embedding': embedding } ]
 
+    return embedded_seqs
+
+def embed_seqs_evo(
+        model, seqs, from_file=True, device='cuda:0',
+        batch_size=512
+):  
+    if from_file:
+        embeddings = torch.load(model.filename_)
+    # else:
+    #     input_ids, seq_lengths = prepare_batch(seqs, tokenizer, device=device)
+
+    #     model, tokenizer = evo_model.model, evo_model.tokenizer
+    #     model.to(device)
+    #     model.eval()
+
+    #     # monkey patch the unembed function with identity
+    #     # this removes the final projection back from the embedding space into tokens
+    #     # so the "logits" of the model is now the final layer embedding
+    #     # see source for unembed - https://huggingface.co/togethercomputer/evo-1-131k-base/blob/main/model.py#L339
+    #     class CustomEmbedding(nn.Module):
+    #         def unembed(self, u):
+    #             return u
+
+    #     model.unembed = CustomEmbedding()
+    #     embedding, _ = model(input_ids)
+    embedded_seqs = {}
+    for i in range(len(seqs)):
+        embedded_seqs[seqs[i]] = [{'embedding': embeddings[i]}]
     return embedded_seqs
