@@ -84,6 +84,12 @@ def get_indices(dist, n_neighbors=None, mode_neighbors='distances'):
 # Compute likelihoods across entire sequence with masked language model.
 def predict_sequence_prob(seq_of_interest, vocabulary, model,
                           verbose=False):
+    if 'evo' in model.name_:
+        from .evo_semantics import predict_sequence_prob_evo
+        return predict_sequence_prob_evo(
+            seq_of_interest, model.alphabet_, model.model_,
+            model.repr_layers_, verbose=verbose,
+        )
     if 'esm' in model.name_:
         from .fb_semantics import predict_sequence_prob_fb
         return predict_sequence_prob_fb(
@@ -111,6 +117,10 @@ def likelihood_compare(seq1, seq2, vocabulary, model,
             seq_probs = seq_cache[seq_pred][list(positions)]
 
         else:
+            # TODO: Use evo sequence scorings
+            # if 'evo' in model.name_:
+
+
             y_pred = predict_sequence_prob(
                 seq_pred, vocabulary, model, verbose=verbose
             )
@@ -135,6 +145,17 @@ def align_seqs(seq1, seq2):
     )[0]
 
 # Align sequences, identify differences, and compute velocity score.
+
+def likelihood_evo_basic(
+        seq1, seq2, vocabulary, model,
+        seq_cache={}, verbose=False, natural_aas=None,
+):
+    from evo_semantics import score_sequences
+
+    scores = score_sequences([seq1, seq2])
+
+    return scores[1] - scores[0]
+
 def likelihood_muts(
         seq1, seq2, vocabulary, model,
         seq_cache={}, verbose=False, natural_aas=None,
@@ -350,7 +371,8 @@ class VelocityGraph:
             neighs_idx = get_iterative_indices(
                 self.indices, i, self.n_recurse_neighbors, self.max_neighs
             )
-
+            if self.score == 'basic_evo':
+                score_fn = likelihood_evo_basic
             if self.score == 'lm':
                 score_fn = likelihood_muts
             elif self.score == 'blosum62':
