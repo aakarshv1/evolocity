@@ -34,4 +34,6 @@ def predict_sequence_prob_evo(
         batch_size=80000, verbose=False
 ):
     # pad 1 on left, 1 on right
-    return np.concat(np.zeros(4), likelihoods[seq].bidirectional, np.zeros(4))
+    zero_pad = np.zeros(4)
+    concatenated_result = np.concatenate((zero_pad, likelihoods[seq].bidirectional, zero_pad), axis=0)
+    return concatenated_result
