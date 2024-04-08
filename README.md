@@ -1,6 +1,20 @@
+# Actual setup instructions
+1. `conda env create --file environment-epi.yml`
+
+
+
 <img src="docs/cyc_stream.PNG" alt="Evolocity" height="250px" align="left"/>
 
-# Evolocity
+
+
+
+
+
+
+
+
+
+### Evolocity
 
 Evolocity is a Python package that implements evolutionary velocity, which constructs landscapes of protein evolution by using the local evolutionary predictions enabled by language models to predict the directionality of evolution and is described in the paper ["Evolutionary velocity with protein language models predicts evolutionary dynamics of diverse proteins"](https://www.cell.com/cell-systems/fulltext/S2405-4712(22)00038-2) by Brian Hie, Kevin Yang, and Peter Kim. This repository also contains the analysis code and links to the data for reproducing the results in the paper.
 

@@ -1,3 +1,7 @@
+import sys
+import os 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) 
+
 import evolocity as evo
 import numpy as np
 import scanpy as sc
@@ -61,3 +65,5 @@ def test_pipeline_tape():
 def test_pipeline_dataset():
     adata = evo.datasets.cytochrome_c()
     adata = evo.datasets.nucleoprotein()
+
+test_pipeline()
