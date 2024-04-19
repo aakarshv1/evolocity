@@ -1,10 +1,18 @@
-import json
+import torch
+import numpy as np
+from typing import List
+from your_model_import import StripedHyena, CharLevelTokenizer  # replace with your actual import path
 
-# likelihoods -> seq -> basic, bidirectional likelihoods
+# instead of loading from a json, load from torch tensor and convert to numpy
+basic_likelihoods = torch.load('basic_likelihoods.pt').numpy()
+bidirectional_likelihoods = torch.load('bidirectional_likelihoods.pt').numpy()
 
-f = open("likelihoods.json")
+# load your sequences from a text file
+with open("sequences.txt", "r") as file:
+    sequences = [sequence.rstrip() for sequence in file]
 
-likelihoods = json.load(f)
+# create a dictionary of sequences and their indices
+seq_to_index = {seq: index for index, seq in enumerate(sequences)}
 
 def score_sequences(
     seqs: List[str],
@@ -22,12 +30,7 @@ def score_sequences(
     each sequence.    
     """
 
-    return np.array(
-        [
-            likelihoods[seq].basic
-            for seq in seqs
-        ]
-    )
+    return [np.mean(basic_likelihoods[seq_to_index[seq]]) for seq in seqs]
 
 def predict_sequence_prob_evo(
         seq, alphabet, model, repr_layers,
@@ -35,5 +38,5 @@ def predict_sequence_prob_evo(
 ):
     # pad 1 on left, 1 on right
     zero_pad = np.zeros(4)
-    concatenated_result = np.concatenate((zero_pad, likelihoods[seq].bidirectional, zero_pad), axis=0)
+    concatenated_result = np.concatenate((zero_pad, bidirectional_likelihoods[seq_to_index[seq]], zero_pad), axis=0)
     return concatenated_result

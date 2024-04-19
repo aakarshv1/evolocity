@@ -22,7 +22,7 @@ def test_einsum():
     assert np.allclose(norm(Ms), np.linalg.norm(Ms, axis=1))
 
 def test_pipeline():
-    adata = evo.pp.featurize_seqs(test_seqs)
+    adata = evo.pp.featurize_seqs(test_seqs, model_name="evo")
     evo.pp.neighbors(adata)
     sc.tl.umap(adata)
 
