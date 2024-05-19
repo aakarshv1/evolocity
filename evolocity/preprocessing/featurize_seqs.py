@@ -171,7 +171,7 @@ def seqs_to_anndata(seqs):
 
 def featurize_seqs(
     seqs,
-    model_name='esm1b',
+    model_name='evo',
     mkey='model',
     embed_batch_size=3000,
     use_cache=False,

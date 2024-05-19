@@ -61,3 +61,6 @@ def test_pipeline_tape():
 def test_pipeline_dataset():
     adata = evo.datasets.cytochrome_c()
     adata = evo.datasets.nucleoprotein()
+
+if __name__=="__main__":
+    test_pipeline()
