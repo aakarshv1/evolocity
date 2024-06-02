@@ -7,7 +7,7 @@ import math
 import numpy as np
 import os
 
-def get_model(model_name, filename="embeddings/test_embeddings.pt"):
+def get_model(model_name, filename="../../../embeddings/test_sequence_embeddings.pt"):
     if model_name == 'esm1':
         from ..tools.fb_model import FBModel
         model = FBModel(
