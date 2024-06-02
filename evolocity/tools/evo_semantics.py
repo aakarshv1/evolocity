@@ -3,12 +3,19 @@ import numpy as np
 from typing import List
 from your_model_import import StripedHyena, CharLevelTokenizer  # replace with your actual import path
 
-# instead of loading from a json, load from torch tensor and convert to numpy
-basic_likelihoods = torch.load('basic_likelihoods.pt').numpy()
-bidirectional_likelihoods = torch.load('bidirectional_likelihoods.pt').numpy()
+# loading likelihood scores from pickle file
+with open('../../../likelihoods/test_likelihoods.pkl', 'rb') as file:
+    data = pickle.load(file)
+basic_scores_list = []
+bidirectional_scores_list = []
+for seq, scores in data.items():
+    basic_scores_list.append(scores['basic'])
+    bidirectional_scores_list.append(scores['bidirectional'])
+basic_array = np.array(basic_scores_list)
+bidirectional_array = np.array(bidirectional_scores_list)
 
 # load your sequences from a text file
-with open("sequences.txt", "r") as file:
+with open("../tests/test_sequences.txt", "r") as file:
     sequences = [sequence.rstrip() for sequence in file]
 
 # create a dictionary of sequences and their indices
