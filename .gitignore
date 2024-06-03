@@ -13,9 +13,7 @@ ZIFA*
 build/
 data
 dist/
-figures*
 plots*
-target*
 temp*
 docs/build
 docs/source/evolocity*
