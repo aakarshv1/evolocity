@@ -1,3 +1,6 @@
+import sys
+import os 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) 
 import evolocity as evo
 import numpy as np
 import scanpy as sc
@@ -23,17 +26,18 @@ def test_einsum():
 
 def test_pipeline():
     adata = evo.pp.featurize_seqs(test_seqs, model_name="evo")
+    # return evo.pp.featurize_seqs(test_seqs, model_name="evo")
     evo.pp.neighbors(adata)
     sc.tl.umap(adata)
 
-    evo.tl.velocity_graph(adata, score="basic_evo")
+    evo.tl.velocity_graph(adata, model_name="evo", score="basic_evo")
     evo.tl.velocity_embedding(adata, basis='umap')
 
-    evo.pl.velocity_embedding(adata, basis='umap', scale=1.)
+    evo.pl.velocity_embedding(adata, basis='umap', scale=1., save=True)
 
     evo.tl.onehot_msa(adata)
     evo.tl.residue_scores(adata)
-    evo.pl.residue_scores(adata)
+    evo.pl.residue_scores(adata, save="res_scores")
 
     evo.tl.terminal_states(adata)
     evo.tl.velocity_pseudotime(adata)

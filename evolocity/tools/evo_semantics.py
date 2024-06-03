@@ -1,18 +1,18 @@
 import torch
 import numpy as np
 from typing import List
-from your_model_import import StripedHyena, CharLevelTokenizer  # replace with your actual import path
+import pickle
 
 # loading likelihood scores from pickle file
-with open('../../../likelihoods/test_likelihoods.pkl', 'rb') as file:
+with open('../../likelihoods/test_likelihoods.pkl', 'rb') as file:
     data = pickle.load(file)
 basic_scores_list = []
 bidirectional_scores_list = []
 for seq, scores in data.items():
     basic_scores_list.append(scores['basic'])
     bidirectional_scores_list.append(scores['bidirectional'])
-basic_array = np.array(basic_scores_list)
-bidirectional_array = np.array(bidirectional_scores_list)
+basic_likelihoods = np.array(basic_scores_list)
+bidirectional_likelihoods = np.array(bidirectional_scores_list)
 
 # load your sequences from a text file
 with open("../tests/test_sequences.txt", "r") as file:
@@ -23,8 +23,8 @@ seq_to_index = {seq: index for index, seq in enumerate(sequences)}
 
 def score_sequences(
     seqs: List[str],
-    model: StripedHyena,
-    tokenizer: CharLevelTokenizer,
+    # model: StripedHyena,
+    # tokenizer: CharLevelTokenizer,
     reduce_method: str = 'mean',
     device: str = 'cuda:0',
 ) -> List[float]:

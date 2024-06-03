@@ -21,6 +21,7 @@ SCORE_CHOICES = {
     'unit',
     'random',
     'edgerand',
+    'basic_evo'
 }
 
 # Choices of substitution matrices.
@@ -150,7 +151,7 @@ def likelihood_evo_basic(
         seq1, seq2, vocabulary, model,
         seq_cache={}, verbose=False, natural_aas=None,
 ):
-    from evo_semantics import score_sequences
+    from .evo_semantics import score_sequences
 
     scores = score_sequences([seq1, seq2])
 
@@ -373,7 +374,7 @@ class VelocityGraph:
             )
             if self.score == 'basic_evo':
                 score_fn = likelihood_evo_basic
-            if self.score == 'lm':
+            elif self.score == 'lm':
                 score_fn = likelihood_muts
             elif self.score == 'blosum62':
                 score_fn = likelihood_blosum62

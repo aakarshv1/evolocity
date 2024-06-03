@@ -6,8 +6,9 @@ from collections import Counter
 import math
 import numpy as np
 import os
+import torch
 
-def get_model(model_name, filename="../../../embeddings/test_sequence_embeddings.pt"):
+def get_model(model_name, filename="../../embeddings/test_sequence_embeddings.pt"):
     if model_name == 'esm1':
         from ..tools.fb_model import FBModel
         model = FBModel(
@@ -149,7 +150,14 @@ def seqs_to_anndata(seqs):
     obs['seq_len'] = []
     for seq in seqs:
         meta = seqs[seq][0]
-        X.append(meta['embedding'])
+        tensor_object = meta['embedding']
+        tensor_cpu = tensor_object.to('cpu')
+        # Step 2: Convert the tensor to a data type supported by NumPy (e.g., float32)
+        tensor_float = tensor_cpu.to(torch.float32)
+        # Step 3: Convert the tensor to a NumPy array
+        embedding_array = tensor_float.detach().numpy()
+        X.append(embedding_array)
+        # print("X:",X)
         for key in meta:
             if key == 'embedding':
                 continue
@@ -213,6 +221,7 @@ def featurize_seqs(
     seqs = {
         str(seq): [ {} ] for seq in seqs
     }
+    # print(seqs)
     seqs = populate_embedding(
         model,
         seqs,
@@ -220,7 +229,7 @@ def featurize_seqs(
         use_cache=use_cache,
         batch_size=embed_batch_size,
     )
-
+    # print(seqs)
     adata = seqs_to_anndata(seqs)
 
     adata.uns[f'featurize_{mkey}'] = model
