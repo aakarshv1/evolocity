@@ -1,10 +1,7 @@
 *.egg-info
 *.log
 *.log.*
-*.pdf
-*.png
 *.pyc
-*.svg
 *.txt
 *~
 .#*
